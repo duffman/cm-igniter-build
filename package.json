@@ -1,0 +1,29 @@
+{
+  "name": "@coldmind/cm-igniter-compiler",
+  "version": "0.7.0",
+  "description": "Utility for watching file changes and rebuilding the Coldmind Igniter Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duffman/cm.igniter.build-watch.git"
+  },
+  "author": "Patrik Forsberg <patrik.forsberg@coldmind.com>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/duffman/cm.igniter.build-watch/issues"
+  },
+  "homepage": "https://github.com/duffman/cm.igniter.build-watch#readme",
+  "devDependencies": {
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.14",
+    "chokidar": "^3.3.1",
+    "inversify": "^5.0.1",
+    "node-watch": "^0.6.3",
+    "reflect-metadata": "^0.1.13"
+  }
+}
