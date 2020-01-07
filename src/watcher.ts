@@ -5,9 +5,8 @@
  * January 2020
  */
 
-import * as path from "path";
 import { Logger } from '@commander/cli.logger';
-
+import * as path from "path";
 const chokidar = require('chokidar');
 
 //const { exec } = require("child_process");
@@ -20,35 +19,54 @@ import {FileAction} from '@root/fileaction';
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
+enum ActionType {
+	NoAction     = 0,
+	Recompile    = 1
+}
+
+enum ChangeType {
+	Added        = 1,
+	Changed      = 2,
+	Unlink       = 3,
+	Error        = 4
+}
+
 export class CmBuildWatch {
-	private watchDir = "/mnt/c/Freedom/therise-rc1-www-coldmind";
-	private fileActions: Array<FileAction>;
+	private watchDir = "/mnt/c/Freedom/therise-rc1-www-coldmind/test-project";
+	private fileActions = new Array<FileAction>();
+	private isReady: boolean;
 
 	constructor() {
-		this.fileActions = new Array<FileAction>();
-
+		watchService.initWatcher().then(res => {
+			Logger.logGreen("Initializing watcher...");
+			this.initWatcher();
+			Logger.logGreen("Watcher Initialized...");
+		}).catch(err => {
+			Logger.logError("initWatcher rejection ::", err, true);
+		});
 	}
 
-	/**
-	 * Add New File Action
-	 * @param {string} fileExt
-	 * @param {ActionType} actionType
-	 */
-	public addFileAction(fileExt: string, actionType: ActionType) {
-		let fileAction = new FileAction(fileExt, actionType);
-		this.fileActions.push(fileAction);
-	}
-
-	public initWatcher() {
+	public initWatcher(): Promise<boolean> {
 		let scope = this;
-		let watcher = chokidar.watch(this.watchDir, {ignored: /[\/\\]\./, persistent: true});
+		let result: boolean = false;
 
-		watcher
-			.on('add',    function(path) { scope.onChange(path, ChangeType.Added);} )
-			.on('change', function(path) { scope.onChange(path, ChangeType.Changed);} )
-			.on('unlink', function(path) { scope.onChange(path, ChangeType.Unlink);} )
-			.on('error',  function(path) { scope.onChange(path, ChangeType.Error);} )
+		return new Promise((result, reject) => {
+			let watcher = chokidar.watch(this.watchDir, {ignored: /[\/\\]\./, persistent: true});
 
+			this.fileActions.push(
+				new FileAction('.ts', ActionType.Recompile)
+			);
+
+			try {
+				watcher
+					.on('add',    function(path) { scope.onChange(path, ChangeType.Added); } )
+					.on('change', function(path) { scope.onChange(path, ChangeType.Changed); } )
+					.on('unlink', function(path) { scope.onChange(path, ChangeType.Unlink); } )
+					.on('error',  function(path) { scope.onChange(path, ChangeType.Error); } )
+			} catch (err) {
+				reject(err);
+			}
+		});
 
 		//
 		// FS Watch
@@ -64,21 +82,20 @@ export class CmBuildWatch {
 	}
 
 	private onChange(filename: string, type: ChangeType) {
+		let ext = path.extname(filename);
+
+		for (const fileAct in this.fileActions) {
+			console.log('ACTIONT ::', fileAct);
+		}
 
 
-//		var path = require('path')
-
-		let fileExt = path.extname(filename);
-
-		Logger.logPurple('Changed ::', filename);
-		Logger.logGreen('Changed EXT ::', fileExt);
-
+		Logger.logPurple('AAAA Changed ::', ext);
 
 		//console.log('Path: "' + path + '"', type);
 	}
 
 	/**
-	 * Execute the tsPath
+	 * Execute the q3ööqååö
 	 * @constructor
 	 */
 	public Shell_tsCompile() {
@@ -120,11 +137,10 @@ export class CmBuildWatch {
 	/**************************************************************************
 	 * Test Stuff
 	 *************************************************************************/
-	public Test_changeDir() {
+	public changeDir(targetDir: string) {
 		console.log('Starting directory: ' + process.cwd());
 		try {
 			process.chdir('/tmp');
-			console.log('New directory: ' + process.cwd());
 		}
 		catch (err) {
 			console.log('chdir: ' + err);
@@ -134,9 +150,8 @@ export class CmBuildWatch {
 
 let watchService = new CmBuildWatch();
 
-//watchService.initWatcher();
 
-watchService.Test_changeDir();
+//watchService.Test_changeDir();
 
 /*
 watchService.Shell_tsCompile();

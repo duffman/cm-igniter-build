@@ -130,8 +130,11 @@ class Logger {
         logData = logData == null ? "" : logData;
         log(this.error(logMessage), logData);
     }
-    static logError(logMessage, logData = null) {
+    static logError(logMessage, logData = null, stringDecor = false) {
         logData = logData == null ? "" : logData;
+        if (stringDecor) {
+            logMessage += ' ::';
+        }
         log(this.error(logMessage), logData);
     }
     /**

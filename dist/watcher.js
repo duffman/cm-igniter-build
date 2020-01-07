@@ -6,34 +6,53 @@
  * January 2020
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
 const cli_logger_1 = require("@commander/cli.logger");
+const path = require("path");
 const chokidar = require('chokidar');
 const fileaction_1 = require("@root/fileaction");
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+var ActionType;
+(function (ActionType) {
+    ActionType[ActionType["NoAction"] = 0] = "NoAction";
+    ActionType[ActionType["Recompile"] = 1] = "Recompile";
+})(ActionType || (ActionType = {}));
+var ChangeType;
+(function (ChangeType) {
+    ChangeType[ChangeType["Added"] = 1] = "Added";
+    ChangeType[ChangeType["Changed"] = 2] = "Changed";
+    ChangeType[ChangeType["Unlink"] = 3] = "Unlink";
+    ChangeType[ChangeType["Error"] = 4] = "Error";
+})(ChangeType || (ChangeType = {}));
 class CmBuildWatch {
     constructor() {
-        this.watchDir = "/mnt/c/Freedom/therise-rc1-www-coldmind";
+        this.watchDir = "/mnt/c/Freedom/therise-rc1-www-coldmind/test-project";
         this.fileActions = new Array();
-    }
-    /**
-     * Add New File Action
-     * @param {string} fileExt
-     * @param {ActionType} actionType
-     */
-    addFileAction(fileExt, actionType) {
-        let fileAction = new fileaction_1.FileAction(fileExt, actionType);
-        this.fileActions.push(fileAction);
+        watchService.initWatcher().then(res => {
+            cli_logger_1.Logger.logGreen("Initializing watcher...");
+            this.initWatcher();
+            cli_logger_1.Logger.logGreen("Watcher Initialized...");
+        }).catch(err => {
+            cli_logger_1.Logger.logError("initWatcher rejection ::", err, true);
+        });
     }
     initWatcher() {
         let scope = this;
-        let watcher = chokidar.watch(this.watchDir, { ignored: /[\/\\]\./, persistent: true });
-        watcher
-            .on('add', function (path) { scope.onChange(path, ChangeType.Added); })
-            .on('change', function (path) { scope.onChange(path, ChangeType.Changed); })
-            .on('unlink', function (path) { scope.onChange(path, ChangeType.Unlink); })
-            .on('error', function (path) { scope.onChange(path, ChangeType.Error); });
+        let result = false;
+        return new Promise((result, reject) => {
+            let watcher = chokidar.watch(this.watchDir, { ignored: /[\/\\]\./, persistent: true });
+            this.fileActions.push(new fileaction_1.FileAction('.ts', ActionType.Recompile));
+            try {
+                watcher
+                    .on('add', function (path) { scope.onChange(path, ChangeType.Added); })
+                    .on('change', function (path) { scope.onChange(path, ChangeType.Changed); })
+                    .on('unlink', function (path) { scope.onChange(path, ChangeType.Unlink); })
+                    .on('error', function (path) { scope.onChange(path, ChangeType.Error); });
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
         //
         // FS Watch
         //
@@ -45,14 +64,15 @@ class CmBuildWatch {
         }); */
     }
     onChange(filename, type) {
-        //		var path = require('path')
-        let fileExt = path.extname(filename);
-        cli_logger_1.Logger.logPurple('Changed ::', filename);
-        cli_logger_1.Logger.logGreen('Changed EXT ::', fileExt);
+        let ext = path.extname(filename);
+        for (const fileAct in this.fileActions) {
+            console.log('ACTIONT ::', fileAct);
+        }
+        cli_logger_1.Logger.logPurple('AAAA Changed ::', ext);
         //console.log('Path: "' + path + '"', type);
     }
     /**
-     * Execute the tsPath
+     * Execute the q3ööqååö
      * @constructor
      */
     Shell_tsCompile() {
@@ -85,11 +105,10 @@ class CmBuildWatch {
     /**************************************************************************
      * Test Stuff
      *************************************************************************/
-    Test_changeDir() {
+    changeDir(targetDir) {
         console.log('Starting directory: ' + process.cwd());
         try {
             process.chdir('/tmp');
-            console.log('New directory: ' + process.cwd());
         }
         catch (err) {
             console.log('chdir: ' + err);
@@ -98,8 +117,7 @@ class CmBuildWatch {
 }
 exports.CmBuildWatch = CmBuildWatch;
 let watchService = new CmBuildWatch();
-//watchService.initWatcher();
-watchService.Test_changeDir();
+//watchService.Test_changeDir();
 /*
 watchService.Shell_tsCompile();
 watchService.Shell_tsPath();

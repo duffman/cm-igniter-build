@@ -5,9 +5,12 @@
  * Proprietary and confidential
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-class Filetype {
-    constructor(Extension, public) {
-        this.Extension = Extension;
+class ProjectCompiler {
+    constructor() {
+    }
+    CompilePath() {
+    }
+    CompileChain() {
     }
 }
-exports.Filetype = Filetype;
+exports.ProjectCompiler = ProjectCompiler;
