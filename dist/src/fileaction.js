@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class FileAction{constructor(Extension,Action){this.Extension=Extension;this.Action=Action;}}exports.FileAction=FileAction;

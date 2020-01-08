@@ -11,6 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^13.1.4",
+    "directory-watcher": "^2.0.3",
+    "gulp": "^4.0.2",
+    "gulp-watch": "^5.0.1",
     "typescript": "^3.7.4",
     "ws": "^7.2.1"
   }

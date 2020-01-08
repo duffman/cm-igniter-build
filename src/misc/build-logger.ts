@@ -4,8 +4,10 @@
  * Proprietary and confidential
  */
 
-import { ActionType } from '@root/app.const';
+/**
+ * Special Logger methods to present formatted
+ * build logs
+ */
+export class BuildLogger {
 
-export class FileAction {
-	constructor(public Extension: string, public Action: ActionType ) {}
 }

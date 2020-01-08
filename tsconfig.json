@@ -9,10 +9,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@root/*": ["./*"],
-      "@commander/*": ["./lib/cli-commander/*"]
+      "@root/*": ["./src/*"]
     }
 },
   "exclude": [

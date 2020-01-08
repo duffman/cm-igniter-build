@@ -5,7 +5,6 @@
  * January 2020
  */
 
-import { Logger } from '@commander/cli.logger';
 import * as path from "path";
 const chokidar = require('chokidar');
 
@@ -15,6 +14,9 @@ const chokidar = require('chokidar');
 //import * as chokidar from 'chokidar';
 import * as fs from 'fs';
 import {FileAction} from '@root/fileaction';
+import {AppMisc} from '@root/misc/app-welcome';
+import {ErrorType} from '@root/app.const';
+import {Logger} from '@root/lib/cli-commander/cli.logger';
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -35,14 +37,23 @@ export class CmBuildWatch {
 	private watchDir = "/mnt/c/Freedom/therise-rc1-www-coldmind/test-project";
 	private fileActions = new Array<FileAction>();
 	private isReady: boolean;
+	private isProgress: boolean = false;
 
-	constructor() {
-		watchService.initWatcher().then(res => {
-			Logger.logGreen("Initializing watcher...");
-			this.initWatcher();
-			Logger.logGreen("Watcher Initialized...");
+	constructor(autoInit: boolean = true) {
+		AppMisc.showWelcomeScreen();
+
+		if (false === autoInit) return;
+
+		this.initWatcher().then(res => {
+			this.changeDir(this.watchDir).then(res => {
+				Logger.logYellow("Watcher Initializing watcher...");
+				this.initWatcher();
+				Logger.logGreen("Watcher Initialized...");
+			}).catch(err => {
+				process.exit(ErrorType.ERR_SWITCH_DIR)
+			});
 		}).catch(err => {
-			Logger.logError("initWatcher rejection ::", err, true);
+			Logger.logError("startWatchBot rejection ::", err, true);
 		});
 	}
 
@@ -50,7 +61,8 @@ export class CmBuildWatch {
 		let scope = this;
 		let result: boolean = false;
 
-		return new Promise((result, reject) => {
+		return new Promise((resolve, reject) => {
+
 			let watcher = chokidar.watch(this.watchDir, {ignored: /[\/\\]\./, persistent: true});
 
 			this.fileActions.push(
@@ -63,6 +75,8 @@ export class CmBuildWatch {
 					.on('change', function(path) { scope.onChange(path, ChangeType.Changed); } )
 					.on('unlink', function(path) { scope.onChange(path, ChangeType.Unlink); } )
 					.on('error',  function(path) { scope.onChange(path, ChangeType.Error); } )
+
+				resolve(true);
 			} catch (err) {
 				reject(err);
 			}
@@ -81,11 +95,28 @@ export class CmBuildWatch {
 
 	}
 
-	private onChange(filename: string, type: ChangeType) {
+	public test() {
+		this.changeDir(this.watchDir).then(res => {
+			Logger.logYellow("Watcher Initializing watcher...");
+			this.initWatcher();
+			Logger.logGreen("Watcher Initialized...");
+		}).catch(err => {
+			process.exit(ErrorType.ERR_SWITCH_DIR)
+		});
+	}
+
+	// Something have changed in the watched directory
+	// Feeling out yoda expressions
+	//Todo: Come to a decision regarding Yoda...
+	public onChange(filename: string, type: ChangeType) {
+		if (false === this.isReady) {
+
+		}
+
 		let ext = path.extname(filename);
 
 		for (const fileAct in this.fileActions) {
-			console.log('ACTIONT ::', fileAct);
+			console.log('EXT "', fileAct);
 		}
 
 
@@ -137,19 +168,25 @@ export class CmBuildWatch {
 	/**************************************************************************
 	 * Test Stuff
 	 *************************************************************************/
-	public changeDir(targetDir: string) {
-		console.log('Starting directory: ' + process.cwd());
-		try {
-			process.chdir('/tmp');
-		}
-		catch (err) {
-			console.log('chdir: ' + err);
-		}
+	public changeDir(targetDir: string): Promise<boolean> {
+		let currDir = process.cwd();
+		Logger.logGreen(`Changing working directory from "${currDir}" to "${targetDir}"`);
+
+		return new Promise((resolve, reject) => {
+			try {
+				process.chdir(targetDir);
+				resolve(true);
+			}
+			catch (err) {
+				Logger.logError("changeDir Error ::",  err);
+				reject(err);
+			}
+		});
 	}
 }
 
-let watchService = new CmBuildWatch();
-
+let watchService = new CmBuildWatch(true);
+//watchService.onChange('/mnt/c/Freedom/cm-igniter-build/cp.ts', ChangeType.Changed);
 
 //watchService.Test_changeDir();
 

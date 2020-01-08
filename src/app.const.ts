@@ -15,3 +15,12 @@ enum ChangeType {
 	Unlink       = 3,
 	Error        = 4
 }
+
+/******************************************
+ * Error Codes
+ *****************************************/
+enum ErrorType {
+	ERR_SWITCH_DIR = 445
+}
+
+export { ActionType, ChangeType, ErrorType };

@@ -4,8 +4,5 @@
  * Proprietary and confidential
  */
 
-import { ActionType } from '@root/app.const';
-
-export class FileAction {
-	constructor(public Extension: string, public Action: ActionType ) {}
+export interface IProjectBot {
 }
