@@ -4,8 +4,8 @@
   "description": "Utility for watching file changes and rebuilding the Coldmind Igniter Server",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/bot/watcher-bot.js",
-    "buildrun": "tsc && tspath --f && node dist/watcher.js",
+    "start": "node dist/src/bot/watcher-bot.js",
+    "buildrun": "tsc && tspath --f && node dist/src/bot/watcher-bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

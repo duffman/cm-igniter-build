@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Proprietary and confidential
  */
 const fs = require("fs");
+//
 //var DirectoryWatcher = require('directory-watcher');
 class Testapp {
     constructor() {

@@ -5,4 +5,6 @@
  */
 
 export interface IProjectBot {
+	name: string;
+	debugMode: boolean;
 }

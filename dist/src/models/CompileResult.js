@@ -1,0 +1,1 @@
+'use strict';Object.defineProperty(exports,'__esModule',{value:true});class CompileResult{constructor(success=false,rawOutput=null,rawError=null,haveErrors=false){this.success=success;this.rawOutput=rawOutput;this.rawError=rawError;this.haveErrors=haveErrors;}}exports.CompileResult=CompileResult;

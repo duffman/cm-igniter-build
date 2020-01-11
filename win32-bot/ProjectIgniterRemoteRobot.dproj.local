@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2020-01-08 01:17:01.571,=C:\Users\Patrik\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2020-01-08 01:17:59.388,C:\Freedom\cm-igniter-build\win32-bot\Main.dfm=C:\Users\Patrik\Documents\Embarcadero\Studio\Projects\Unit2.dfm</Transaction>
+    <Transaction>2020-01-08 01:17:59.388,C:\Freedom\cm-igniter-build\win32-bot\Main.pas=C:\Users\Patrik\Documents\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2020-01-08 01:18:25.490,C:\Freedom\cm-igniter-build\win32-bot\ProjectIgniterRemoteRobot.dproj=C:\Users\Patrik\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
